@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useCallback, useContext, useEffect } from 'react';
 import { GlobalContext } from '../context';
 import axios from 'axios';
 import classes from './styles.module.css';
@@ -10,7 +10,7 @@ const Home = () => {
     useContext(GlobalContext);
   const navigate = useNavigate();
 
-  const fetchListOfBlogs = async () => {
+  const fetchListOfBlogs = useCallback(async () => {
     setPending(true);
     const response = await axios.get('http://localhost:8000/api/blogs/');
     const result = await response.data;
@@ -22,7 +22,7 @@ const Home = () => {
       setPending(false);
       setBlogList([]);
     }
-  };
+  }, [setBlogList, setPending]);
 
   const handleDeleteBlog = async (getCurrentId) => {
     const response = await axios.delete(
@@ -42,7 +42,7 @@ const Home = () => {
 
   useEffect(() => {
     fetchListOfBlogs();
-  }, []);
+  }, [fetchListOfBlogs]);
 
   return (
     <div className={classes.wrapper}>
